@@ -1,0 +1,31 @@
+---
+
+- name: create private key for CA
+  openssl_privatekey:
+#    mode: 0640
+#    owner: krol
+#    group: krol
+    path: "{{ ca_path.key }}"
+    size: 4096
+    state: "present"
+    type: "RSA"
+    force: true
+#  become: true
+
+- name: create CSR
+  openssl_csr:
+    path: "{{ ca_path.csr }}"
+    privatekey_path: "{{ ca_path.key }}"
+    state: "present"
+    force: true
+    key_usage:
+      - keyCertSign
+      - cRLSign
+      - digitalSignature
+    basic_constraints: "CA:True"
+    common_name: "{{ ca_csr.cn }}"
+    country_name: "{{ ca_csr.c }}"
+    email_address: "{{ ca_csr.e }}"
+    organization_name: "{{ ca_csr.o }}"
+    organizational_unit_name: "{{ ca_csr.ou }}"
+

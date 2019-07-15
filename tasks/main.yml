@@ -1,0 +1,14 @@
+---
+
+# 1 generate selfsigned cert if it is not created
+# 2. generate private key for service
+# 3. generate CRS for service
+# 4. create signed certificate
+# 5. create cert with chain bundle
+
+# 1
+- include: ca.yml
+
+# 2-5
+- include: service.yml
+

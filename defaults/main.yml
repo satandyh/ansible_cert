@@ -1,2 +1,15 @@
+# CA
+ca_path:
+  key: "/tmp/ca.key"
+  csr: "/tmp/ca.csr"
+  pub: "/tmp/ca.crt"
 
-private_key_file: "/tmp/openssl/private.key"
+ca_csr:
+  cn: "example.com"
+  c: "US"
+  e: "admin@example.com"
+  o: "example ltd"
+  ou: "admin"
+
+
+# service
