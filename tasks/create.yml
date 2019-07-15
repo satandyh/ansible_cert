@@ -1,0 +1,13 @@
+---
+
+- name: create private key
+  openssl_privatekey:
+    mode: 0640
+    owner: krol
+    group: krol
+    path: {{ private_key_file }}
+    size: 4096
+    state: "present"
+    type: "RSA"
+  become: true
+
