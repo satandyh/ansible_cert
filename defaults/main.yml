@@ -14,8 +14,6 @@ ca_csr:
   o: "example ltd"
   ou: "admin"
 
-
-
 service_name: "good"
 service_owner: "root"
 service_group: "root"

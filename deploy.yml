@@ -1,6 +1,0 @@
----
-- hosts: localhost
-  vars:
-    - include: defaults/main.yml
-  tasks:
-    - include: tasks/ca.yml
