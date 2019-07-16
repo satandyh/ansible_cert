@@ -12,4 +12,17 @@ ca_csr:
   ou: "admin"
 
 
+service_name: "good"
 # service
+service_path:
+  key: "/tmp/{{ service_name }}.key"
+  csr: "/tmp/{{ service_name }}.csr"
+  pub: "/tmp/{{ service_name }}.crt"
+
+service_csr:
+  cn: "{{ service_name }}.example.com"
+  c: "US"
+  e: "admin@example.com"
+  o: "example ltd"
+  ou: "admin"
+

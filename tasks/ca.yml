@@ -22,7 +22,8 @@
       - keyCertSign
       - cRLSign
       - digitalSignature
-    basic_constraints: "CA:True"
+    basic_constraints:
+      - 'CA:TRUE'
     common_name: "{{ ca_csr.cn }}"
     country_name: "{{ ca_csr.c }}"
     email_address: "{{ ca_csr.e }}"

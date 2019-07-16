@@ -1,13 +1,30 @@
 ---
 
-- name: create private key
+- name: create private key for service
   openssl_privatekey:
     mode: 0640
-    owner: krol
-    group: krol
-    path: {{ private_key_file }}
+#    owner: krol
+#    group: krol
+    path: "{{ service_path.key }}"
     size: 4096
     state: "present"
     type: "RSA"
-  become: true
+    force: true
+#  become: true
+
+- name: create CSR for service
+  openssl_csr:
+    path: "{{ service_path.csr }}"
+    privatekey_path: "{{ service_path.key }}"
+    state: "present"
+    force: true
+    subject_alt_name: "DNS:{{ ansible_hostname }},IP:{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+    extended_key_usage:
+      - clientAuth
+      - serverAuth
+    common_name: "{{ service_csr.cn }}"
+    country_name: "{{ service_csr.c }}"
+    email_address: "{{ service_csr.e }}"
+    organization_name: "{{ service_csr.o }}"
+    organizational_unit_name: "{{ service_csr.ou }}"
 
