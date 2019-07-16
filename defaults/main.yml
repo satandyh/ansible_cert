@@ -1,8 +1,11 @@
+need_CA: true
+
+# if CA not need insert right content into next vars
 # CA
 ca_path:
-  key: "/tmp/ca.key"
-  csr: "/tmp/ca.csr"
-  pub: "/tmp/ca.crt"
+  key: "/tmp/ca/ca.key"
+  csr: "/tmp/ca/ca.csr"
+  pub: "/tmp/ca/ca.crt"
 
 ca_csr:
   cn: "example.com"
@@ -12,7 +15,10 @@ ca_csr:
   ou: "admin"
 
 
+
 service_name: "good"
+service_owner: "root"
+service_group: "root"
 # service
 service_path:
   key: "/tmp/{{ service_name }}.key"
@@ -22,7 +28,7 @@ service_path:
 
 
 service_csr:
-  cn: "{{ service_name }}.example.com"
+  cn: "{{ ansible_fqdn }}"
   c: "US"
   e: "admin@example.com"
   o: "example ltd"

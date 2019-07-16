@@ -1,49 +1,78 @@
 ---
+- name: create service cert on localhost
+  block:
+  - name: create dir in /tmp for certs
+    file:
+      path: "/tmp/{{ ansible_fqdn }}"
+      state: directory
 
-- name: create private key for service
-  openssl_privatekey:
-    mode: 0640
-#    owner: krol
-#    group: krol
-    path: "{{ service_path.key }}"
-    size: 4096
-    state: "present"
-    type: "RSA"
-    force: true
-#  become: true
+  - name: create private key for service
+    openssl_privatekey:
+      path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.key"
+      size: 4096
+      state: "present"
+      type: "RSA"
+      force: true
 
-- name: create CSR for service
-  openssl_csr:
-    path: "{{ service_path.csr }}"
-    privatekey_path: "{{ service_path.key }}"
-    state: "present"
-    force: true
-    subject_alt_name: "DNS:{{ ansible_fqdn }},IP:{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
-    extended_key_usage:
-      - clientAuth
-      - serverAuth
-    common_name: "{{ service_csr.cn }}"
-    country_name: "{{ service_csr.c }}"
-    email_address: "{{ service_csr.e }}"
-    organization_name: "{{ service_csr.o }}"
-    organizational_unit_name: "{{ service_csr.ou }}"
+  - name: create CSR for service
+    openssl_csr:
+      path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.csr"
+      privatekey_path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.key"
+      state: "present"
+      force: true
+      subject_alt_name: "DNS:{{ ansible_fqdn }},DNS:*.{{ ansible_fqdn }},IP:{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+      key_usage:
+        - keyEncipherment
+      extended_key_usage:
+        - clientAuth
+        - serverAuth
+      common_name: "{{ service_csr.cn }}"
+      country_name: "{{ service_csr.c }}"
+      email_address: "{{ service_csr.e }}"
+      organization_name: "{{ service_csr.o }}"
+      organizational_unit_name: "{{ service_csr.ou }}"
 
-- name: sign our cert by CA
-  openssl_certificate:
-    path: "{{ service_path.pub }}"
-    csr_path: "{{ service_path.csr }}"
-    ownca_path: "{{ ca_path.pub }}"
-    ownca_privatekey_path: "{{ ca_path.key }}"
-    provider: ownca
+  - name: sign our cert by CA
+    openssl_certificate:
+      path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.pub"
+      csr_path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.csr"
+      ownca_path: "{{ ca_path.pub }}"
+      ownca_privatekey_path: "{{ ca_path.key }}"
+      provider: ownca
 
-- name: create chain bundle
-  certificate_complete_chain:
-    input_chain: "{{ lookup('file', '{{ service_path.pub }}') }}"
-    root_certificates: "{{ ca_path.pub }}"
-  register: chain_bundle
+  - name: create chain bundle
+    certificate_complete_chain:
+      input_chain: "{{ lookup('file', '/tmp/{{ ansible_fqdn }}/{{ service_name }}.pub') }}"
+      root_certificates: "{{ ca_path.pub }}"
+    register: chain_bundle
 
-- name: copy complete chain to disk
+  - name: copy complete chain to localhost disk
+    copy:
+      dest: "/tmp/{{ ansible_fqdn }}/{{ service_name }}_bundle.pem"
+      content: "{{ ''.join(chain_bundle.complete_chain) }}"
+  delegate_to: localhost
+
+- name: copy certificate to remote host
   copy:
+    src: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.pub"
+    dest: "{{ service_path.pub }}"
+    mode: 0440
+    owner: "{{ service_owner }}"
+    group: "{{ service_group }}"
+
+- name: copy private key to remote host
+  copy:
+    src: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.key"
+    dest: "{{ service_path.key }}"
+    mode: 0600
+    owner: "{{ service_owner }}"
+    group: "{{ service_group }}"
+
+- name: copy chain bundle to remote host
+  copy:
+    src: "/tmp/{{ ansible_fqdn }}/{{ service_name }}_bundle.pem"
     dest: "{{ service_path.chain }}"
-    content: "{{ ''.join(chain_bundle.complete_chain) }}"
+    mode: 0440
+    owner: "{{ service_owner }}"
+    group: "{{ service_group }}"
 
