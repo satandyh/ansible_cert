@@ -34,9 +34,9 @@ service_csr.ou _organization unit_
 
 ## Note
 
-all credential files will have **service_name**.key/csr/crt
+All credential files will have name like **service_name**.key/csr/crt.
 
-all created certificates will work only at remote host with the same fqdn/ip names
+All created certificates will work only at remote host with the same fqdn/ip names. Because we play in mTLS.
 
-all created certificates will have only client/server authentification possibilities
+All created certificates will have only client/server authentification possibilities.
 

@@ -14,16 +14,16 @@ ca_csr:
   o: "example ltd"
   ou: "admin"
 
-service_name: "good"
+# service
+service_name: "good-boy"
 service_owner: "root"
 service_group: "root"
-# service
+
 service_path:
   key: "/tmp/{{ service_name }}.key"
   csr: "/tmp/{{ service_name }}.csr"
   pub: "/tmp/{{ service_name }}.crt"
   chain: "/tmp/{{ service_name }}_bundle.pem"
-
 
 service_csr:
   cn: "{{ ansible_fqdn }}"

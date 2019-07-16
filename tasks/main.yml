@@ -1,18 +1,16 @@
 ---
 
-# 1. generate selfsigned cert if it is not created
-# 2. generate private key for service
-# 3. generate CRS for service
-# 4. create signed certificate
-# 5. create cert with chain bundle
-# 6. copy cert to remote host
+# 1. if need selfsigned certificate
+# 1.1 create dir at localhost for root CA files
+# 1.2 generate private key, csr and certificate on localhost
+# 2.1 create directory for service
+# 2.2 generate private key, csr and signed by root CA certificate
+# 2.1 generate certificate chain bundle for service to use it for authentification (only public info)
+# 3. copy private key, signed certificate and chain bundle of service to the remote host
 
 # 1
-- name: create certificates
-  include: ca.yml
-  delegate_to: localhost
+- include: ca.yml
 
-# 2-5
+# 2-3
 - include: service.yml
 
-- name: copy
