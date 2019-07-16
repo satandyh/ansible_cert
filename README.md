@@ -8,29 +8,29 @@ also it can create root CA certificate and sign by it all your service certifica
 
 ## files
 
-_If you have root CA cert. Put absolute path to your CA credentials at localhost. If you have no any root cert - let them default_
+If you have root CA cert. Put absolute path to your CA credentials at localhost. If you have no any root cert - let them default
 
-- ca_path.key _root private key_
-- ca_path.pub _root public cert_
-- ca_path.csr _(Optional) root csr record_
+- **ca_path.key** root private key
+- **ca_path.pub** root public cert
+- **ca_path.csr** (Optional) root csr record
 
 ## vars
 
-- need_CA _true/false trigger_
-- service_name _name for your service at remote host_
-- service_owner _files owner at remote host_
-- service_group _files group at remote host_
+- **need_CA** true/false trigger
+- **service_name** name for your service at remote host
+- **service_owner** files owner at remote host
+- **service_group** files group at remote host
 
-- service_path.key _path to private key at remote host_
-- service_path.pub _path to certificate at remote host_
-- service_path.csr _(Optional) path to csr file at remote host_
-- service_path.chain _path to chain bundle at remote host_
+- **service_path.key** path to private key at remote host
+- **service_path.pub** path to certificate at remote host
+- **service_path.csr** (Optional) path to csr file at remote host
+- **service_path.chain** path to chain bundle at remote host
 
-service_csr.cn _common name_
-service_csr.c _country_
-service_csr.e _email_
-service_csr.o _organization name_
-service_csr.ou _organization unit_
+- **service_csr.cn** common name
+- **service_csr.c** country
+- **service_csr.e** email
+- **service_csr.o** щrganization name
+- **service_csr.ou** organization unit
 
 ## Note
 
