@@ -30,3 +30,10 @@
     organization_name: "{{ ca_csr.o }}"
     organizational_unit_name: "{{ ca_csr.ou }}"
 
+- name: generate selfsigned crt
+  openssl_certificate:
+    path: "{{ ca_path.pub }}"
+    privatekey_path: "{{ ca_path.key }}"
+    csr_path: "{{ ca_path.csr }}"
+    provider: selfsigned
+

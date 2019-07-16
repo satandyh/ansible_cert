@@ -18,6 +18,8 @@ service_path:
   key: "/tmp/{{ service_name }}.key"
   csr: "/tmp/{{ service_name }}.csr"
   pub: "/tmp/{{ service_name }}.crt"
+  chain: "/tmp/{{ service_name }}_bundle.pem"
+
 
 service_csr:
   cn: "{{ service_name }}.example.com"

@@ -18,7 +18,7 @@
     privatekey_path: "{{ service_path.key }}"
     state: "present"
     force: true
-    subject_alt_name: "DNS:{{ ansible_hostname }},IP:{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+    subject_alt_name: "DNS:{{ ansible_fqdn }},IP:{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
     extended_key_usage:
       - clientAuth
       - serverAuth
@@ -27,4 +27,23 @@
     email_address: "{{ service_csr.e }}"
     organization_name: "{{ service_csr.o }}"
     organizational_unit_name: "{{ service_csr.ou }}"
+
+- name: sign our cert by CA
+  openssl_certificate:
+    path: "{{ service_path.pub }}"
+    csr_path: "{{ service_path.csr }}"
+    ownca_path: "{{ ca_path.pub }}"
+    ownca_privatekey_path: "{{ ca_path.key }}"
+    provider: ownca
+
+- name: create chain bundle
+  certificate_complete_chain:
+    input_chain: "{{ lookup('file', '{{ service_path.pub }}') }}"
+    root_certificates: "{{ ca_path.pub }}"
+  register: chain_bundle
+
+- name: copy complete chain to disk
+  copy:
+    dest: "{{ service_path.chain }}"
+    content: "{{ ''.join(chain_bundle.complete_chain) }}"
 
