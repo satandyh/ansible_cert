@@ -39,6 +39,6 @@
       privatekey_path: "{{ ca_path.key }}"
       csr_path: "{{ ca_path.csr }}"
       provider: selfsigned
-  when: need_CA
+  when: need_CA |bool
   delegate_to: localhost
 
