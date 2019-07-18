@@ -54,7 +54,6 @@
 
 - name: copy files to remote host
   block:
-  become: true
   - name: copy certificate to remote host
     copy:
       src: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.pub"
@@ -78,4 +77,5 @@
       mode: 0444
       owner: "{{ service_owner }}"
       group: "{{ service_group }}"
+  become: true
 
