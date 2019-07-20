@@ -32,11 +32,8 @@ If you have root CA cert. Put absolute path to your CA credentials at localhost.
 - **service_csr.o** щrganization name
 - **service_csr.ou** organization unit
 
-## Note
-
-All credential files will have name like **service_name**.key/csr/crt.
-
-All created certificates will work only at remote host with the same fqdn/ip names. Because we play in mTLS.
-
-All created certificates will have only client/server authentification possibilities.
-
+> ## Note
+>
+> All credential files will have name like **service_name**.key/csr/crt.  
+> All created certificates will work only at remote host with the same fqdn/ip names. Because we play in mTLS.  
+> All created certificates will have only client/server authentification possibilities.
