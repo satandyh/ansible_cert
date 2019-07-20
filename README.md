@@ -4,7 +4,7 @@ it create signed certificates for service
 
 also it can create root CA certificate and sign by it all your service certificates. if you need root cert just change `need_CA` variable to true and insert necessary values into `ca_csr` object.
 
-# What need for usage _(minimum)_
+# What is needed for usage _(minimum)_
 
 ## files
 
