@@ -42,4 +42,3 @@
   when: need_CA |bool
   delegate_to: localhost
   run_once: true
-

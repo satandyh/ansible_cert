@@ -25,3 +25,8 @@ tags
 ################
 *.retry
 ################
+# for molecule
+################
+molecule/
+.yamllint
+

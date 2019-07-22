@@ -1,3 +1,5 @@
+---
+
 need_CA: true
 
 # if CA not need insert right content into next vars
@@ -31,4 +33,3 @@ service_csr:
   e: "admin@example.com"
   o: "example ltd"
   ou: "admin"
-
