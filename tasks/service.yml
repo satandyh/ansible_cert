@@ -55,27 +55,27 @@
 
 - name: copy files to remote host
   block:
-  - name: copy certificate to remote host
-    copy:
-      src: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.pub"
-      dest: "{{ service_path.pub }}"
-      mode: 0440
-      owner: "{{ service_owner }}"
-      group: "{{ service_group }}"
+    - name: copy certificate to remote host
+      copy:
+        src: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.pub"
+        dest: "{{ service_path.pub }}"
+        mode: 0440
+        owner: "{{ service_owner }}"
+        group: "{{ service_group }}"
 
-  - name: copy private key to remote host
-    copy:
-      src: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.key"
-      dest: "{{ service_path.key }}"
-      mode: 0600
-      owner: "{{ service_owner }}"
-      group: "{{ service_group }}"
+    - name: copy private key to remote host
+      copy:
+        src: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.key"
+        dest: "{{ service_path.key }}"
+        mode: 0600
+        owner: "{{ service_owner }}"
+        group: "{{ service_group }}"
 
-  - name: copy chain bundle to remote host
-    copy:
-      src: "/tmp/{{ ansible_fqdn }}/{{ service_name }}_bundle.pem"
-      dest: "{{ service_path.chain }}"
-      mode: 0444
-      owner: "{{ service_owner }}"
-      group: "{{ service_group }}"
+    - name: copy chain bundle to remote host
+      copy:
+        src: "/tmp/{{ ansible_fqdn }}/{{ service_name }}_bundle.pem"
+        dest: "{{ service_path.chain }}"
+        mode: 0444
+        owner: "{{ service_owner }}"
+        group: "{{ service_group }}"
   become: true
