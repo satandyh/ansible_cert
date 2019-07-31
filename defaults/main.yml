@@ -18,6 +18,7 @@ ca_csr:
 
 # service
 service_name: "good-boy"
+service_domain: "puppy.com"
 service_owner: "root"
 service_group: "root"
 
