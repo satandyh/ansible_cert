@@ -55,6 +55,15 @@
 
 - name: copy files to remote host
   block:
+    - name: create dirs for certs
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - "{{ service_path.pub }}"
+        - "{{ service_path.key }}"
+        - "{{ service_path.chain }}"
+
     - name: copy certificate to remote host
       copy:
         src: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.pub"
