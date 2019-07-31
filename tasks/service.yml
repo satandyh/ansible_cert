@@ -70,8 +70,9 @@
 
     - name: create dirs for certs
       file:
-        path: "{{ item }}"
+        path: "{{ item | dirname }}"
         state: directory
+        recurse: true
       loop:
         - "{{ service_path.pub }}"
         - "{{ service_path.key }}"
