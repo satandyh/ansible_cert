@@ -1,57 +1,56 @@
 ---
-
 - name: create service cert on localhost
   block:
-  - name: create dir in /tmp for certs
-    file:
-      path: "/tmp/{{ ansible_fqdn }}"
-      state: directory
+    - name: create dir in /tmp for certs
+      file:
+        path: "/tmp/{{ ansible_fqdn }}"
+        state: directory
 
-  - name: create private key for service
-    openssl_privatekey:
-      path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.key"
-      size: 4096
-      state: "present"
-      type: "RSA"
-      force: true
+    - name: create private key for service
+      openssl_privatekey:
+        path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.key"
+        size: 4096
+        state: "present"
+        type: "RSA"
+        force: true
 
-  - name: create CSR for service
-    openssl_csr:
-      path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.csr"
-      privatekey_path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.key"
-      state: "present"
-      force: true
-      # subject_alt_name: "DNS:{{ ansible_fqdn }},DNS:*.{{ ansible_fqdn }},DNS:{{ ansible_hostname }}.{{ service_domain }},DNS:*.{{ ansible_hostname }}.{{ service_domain }},DNS:{{ service_name }}.{{ service_domain }},DNS:*.{{ service_name }}.{{ service_domain }},DNS:{{ service_name }}.{{ ansible_domain }},DNS:*.{{ service_name }}.{{ ansible_domain }},IP:{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }},IP:127.0.0.1"
-      subject_alt_name: "DNS:{{ ansible_hostname }}.{{ service_domain }},DNS:*.{{ ansible_hostname }}.{{ service_domain }},DNS:{{ service_name }}.{{ service_domain }},DNS:*.{{ service_name }}.{{ service_domain }},IP:{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }},IP:127.0.0.1"
-      # key_usage:
+    - name: create CSR for service
+      openssl_csr:
+        path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.csr"
+        privatekey_path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.key"
+        state: "present"
+        force: true
+        # subject_alt_name: "DNS:{{ ansible_fqdn }},DNS:*.{{ ansible_fqdn }},DNS:{{ ansible_hostname }}.{{ service_domain }},DNS:*.{{ ansible_hostname }}.{{ service_domain }},DNS:{{ service_name }}.{{ service_domain }},DNS:*.{{ service_name }}.{{ service_domain }},DNS:{{ service_name }}.{{ ansible_domain }},DNS:*.{{ service_name }}.{{ ansible_domain }},IP:{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }},IP:127.0.0.1"
+        subject_alt_name: "DNS:{{ ansible_hostname }}.{{ service_domain }},DNS:*.{{ ansible_hostname }}.{{ service_domain }},DNS:{{ service_name }}.{{ service_domain }},DNS:*.{{ service_name }}.{{ service_domain }},IP:{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }},IP:127.0.0.1"
+        # key_usage:
         # - keyEncipherment
-      extended_key_usage:
-        - clientAuth
-        - serverAuth
-      common_name: "{{ service_csr.cn }}"
-      country_name: "{{ service_csr.c }}"
-      email_address: "{{ service_csr.e }}"
-      organization_name: "{{ service_csr.o }}"
-      organizational_unit_name: "{{ service_csr.ou }}"
+        extended_key_usage:
+          - clientAuth
+          - serverAuth
+        common_name: "{{ service_csr.cn }}"
+        country_name: "{{ service_csr.c }}"
+        email_address: "{{ service_csr.e }}"
+        organization_name: "{{ service_csr.o }}"
+        organizational_unit_name: "{{ service_csr.ou }}"
 
-  - name: sign our cert by CA
-    openssl_certificate:
-      path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.pub"
-      csr_path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.csr"
-      ownca_path: "{{ ca_path.pub }}"
-      ownca_privatekey_path: "{{ ca_path.key }}"
-      provider: ownca
+    - name: sign our cert by CA
+      openssl_certificate:
+        path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.pub"
+        csr_path: "/tmp/{{ ansible_fqdn }}/{{ service_name }}.csr"
+        ownca_path: "{{ ca_path.pub }}"
+        ownca_privatekey_path: "{{ ca_path.key }}"
+        provider: ownca
 
-  - name: create chain bundle
-    certificate_complete_chain:
-      input_chain: "{{ lookup('file', '/tmp/{{ ansible_fqdn }}/{{ service_name }}.pub') }}"
-      root_certificates: "{{ ca_path.pub }}"
-    register: chain_bundle
+    - name: create chain bundle
+      certificate_complete_chain:
+        input_chain: "{{ lookup('file', '/tmp/{{ ansible_fqdn }}/{{ service_name }}.pub') }}"
+        root_certificates: "{{ ca_path.pub }}"
+      register: chain_bundle
 
-  - name: copy complete chain to localhost disk
-    copy:
-      dest: "/tmp/{{ ansible_fqdn }}/{{ service_name }}_bundle.pem"
-      content: "{{ ''.join(chain_bundle.complete_chain) }}"
+    - name: copy complete chain to localhost disk
+      copy:
+        dest: "/tmp/{{ ansible_fqdn }}/{{ service_name }}_bundle.pem"
+        content: "{{ ''.join(chain_bundle.complete_chain) }}"
   delegate_to: localhost
 
 - name: copy files to remote host

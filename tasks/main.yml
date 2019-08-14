@@ -1,5 +1,4 @@
 ---
-
 # 1. if need selfsigned certificate
 # 1.1 create dir at localhost for root CA files
 # 1.2 generate private key, csr and certificate on localhost
